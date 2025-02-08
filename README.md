@@ -4,7 +4,14 @@
 1. Создать dataType currentUser
 2. Добавить зависимость crypto: ^3.0.5
 3. 2 файла слева, их нужно скопировать и добавить в ваш FF проект.
-4. Создать DataType currentUser, поля в нем на фото: (нужен чтобы распарсить данные, которые отдаст Телеграм)
+4. Добавить в разделе Веб в заголовок :
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/@tonconnect/sdk@latest/dist/tonconnect.umd.min.js"></script>
+
+
+![image](https://github.com/user-attachments/assets/11c53af8-202a-4f7c-a773-8dacc977f77a)
+
+6. Создать DataType currentUser, поля в нем на фото: (нужен чтобы распарсить данные, которые отдаст Телеграм)
 
  ![image](https://github.com/user-attachments/assets/5f544bef-0fae-43ee-98e3-dbf0003d5173)
 
