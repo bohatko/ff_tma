@@ -1,0 +1,87 @@
+// Automatic FlutterFlow imports
+import '/backend/backend.dart';
+import '/backend/schema/structs/index.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import '/custom_code/actions/index.dart'; // Imports other custom actions
+import '/flutter_flow/custom_functions.dart'; // Imports custom functions
+import 'package:flutter/material.dart';
+// Begin custom action code
+// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
+
+import '/backend/schema/structs/current_user_struct.dart';
+
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
+Future<CurrentUserStruct> checkTelegramInitData(
+  String initDataString,
+  String botToken,
+) async {
+  final uriParams = Uri.splitQueryString(initDataString);
+
+  if (!uriParams.containsKey('hash')) {
+    // Нет хеша — вернём пустую структуру
+    return CurrentUserStruct();
+  }
+  final hash = uriParams['hash'];
+
+
+  final dataMap = Map<String, String>.from(uriParams);
+  dataMap.remove('hash');
+
+  final sortedKeys = dataMap.keys.toList()..sort();
+  final dataCheckString = sortedKeys.map((k) => '$k=${dataMap[k]}').join('\n');
+
+
+  final secretKey = Hmac(sha256, utf8.encode('WebAppData'))
+      .convert(utf8.encode(botToken))
+      .bytes;
+
+
+  final calculatedHash =
+      Hmac(sha256, secretKey).convert(utf8.encode(dataCheckString)).toString();
+
+
+  if (calculatedHash != hash) {
+
+    return CurrentUserStruct();
+  }
+
+
+  if (!dataMap.containsKey('user')) {
+    return CurrentUserStruct();
+  }
+
+
+  final userJsonString = dataMap['user']!;
+  dynamic userMap;
+  try {
+    userMap = jsonDecode(userJsonString);
+  } catch (e) {
+
+    return CurrentUserStruct();
+  }
+
+
+  final id = userMap['id']?.toInt() ?? '';
+  final isBot = userMap['is_bot'] == true;
+  final firstName = userMap['first_name']?.toString() ?? '';
+  final lastName = userMap['last_name']?.toString() ?? '';
+  final username = userMap['username']?.toString() ?? '';
+  final languageCode = userMap['language_code']?.toString() ?? '';
+  final photoUrl = userMap['photo_url']?.toString() ?? '';
+
+
+  return CurrentUserStruct(
+    id: id,
+    isBot: isBot,
+    firstName: firstName,
+    lastName: lastName,
+    username: username,
+    languageCode: languageCode,
+    photoUrl: photoUrl,
+  );
+}
+
+// End custom action code
